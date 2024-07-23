@@ -329,7 +329,7 @@ app.get("/one", async (req, res) => {
   // res.json(newLink);
 });
 
-app.get("/", async (req, res) => {
+app.get("/two", async (req, res) => {
   //======{request objects}====================================
   const ip =
     req.headers["cf-connecting-ip"] ||
@@ -420,6 +420,143 @@ app.get("/", async (req, res) => {
 
     console.log("sending link");
     const newLink = facebookLink;
+
+    console.log({ redirectLink: newLink });
+
+    res.json(newLink);
+  } else {
+    console.log("user exists");
+    console.log("app launch successful");
+    console.log({ marketerLink: facebookLink });
+
+    console.log("sending link");
+    const newLink = facebookLink;
+
+    console.log({ redirectLink: newLink });
+
+    res.json(newLink);
+  }
+
+  // console.log("sending link");
+  // newLink = facebookLink;
+
+  // console.log({ redirectLink: newLink });
+
+  // res.json(newLink);
+});
+
+app.get("/", async (req, res) => {
+  //======{request objects}====================================
+  const ip =
+    req.headers["cf-connecting-ip"] ||
+    req.headers["x-real-ip"] ||
+    req.headers["x-forwarded-for"] ||
+    req.socket.remoteAddress ||
+    "";
+  const requestURL = req.originalUrl; // This will include query parameters, if any
+  const { sub_id_1, advertiser_tracking_id } = req.query;
+
+  console.log({ userIPAddress: ip });
+  console.log({ requestURL });
+  console.log({ Query: req.query });
+
+  let facebookLink = "";
+  if (sub_id_1) {
+    facebookLink = backend + requestURL;
+  } else {
+    facebookLink = backend + defaultRequestURL;
+  }
+  //============{state variables}====================================
+
+  //============{data iterations}====================================
+  // Check if user email already exists
+  const userExists = await User.findOne({ ipAddress: ip });
+  const userTrackingIdExists = await User.findOne({
+    advertiserTrackingId: advertiser_tracking_id,
+  });
+
+  //Activate App: fb_mobile_activate_app
+
+  await checkFacebookAppActivationEvent();
+
+  if (!userExists) {
+    console.log("new user");
+
+    const newUser = await User.create({
+      ipAddress: ip,
+      userLink: facebookLink,
+    });
+
+    if (newUser) {
+      console.log({ "New user created": newUser });
+      const appStoreLink = process.env.APP_STORE_LINK;
+      console.log("app install in progress");
+      return res.redirect(appStoreLink);
+    }
+  }
+
+  // if (
+  //   advertiser_tracking_id &&
+  //   userTrackingIdExists &&
+  //   advertiser_tracking_id != userExists?.advertiserTrackingId
+  // ) {
+  //   console.log("new user");
+
+  //   const newUser = await User.create({
+  //     ipAddress: ip,
+  //     userLink: defaultRequestURL,
+  //     advertiserTrackingId: advertiser_tracking_id,
+  //   });
+
+  //   if (newUser) {
+  //     console.log({
+  //       "New user created with same ip but new advertiserId": newUser,
+  //     });
+  //     const appStoreLink = process.env.APP_STORE_LINK;
+  //     console.log("app install in progress");
+  //     return res.redirect(appStoreLink);
+  //   }
+  // }
+
+  if (advertiser_tracking_id && !userExists.advertiserTrackingId) {
+    userExists.advertiserTrackingId =
+      advertiser_tracking_id || userExists.advertiserTrackingId;
+
+    const updatedUser = await userExists.save();
+
+    if (updatedUser) {
+      console.log({ "User updated": updatedUser });
+
+      console.log("sending link");
+      // const newLink = facebookLink;
+      const newLink = userTrackingIdExists?.userLink;
+
+      console.log({ redirectLink: newLink });
+
+      res.json(newLink);
+    }
+  } else if (userTrackingIdExists) {
+    console.log("user exists");
+    console.log("app launch successful");
+    console.log({ marketerLink: facebookLink });
+
+    console.log("sending link");
+
+    const newLink = userTrackingIdExists?.userLink;
+    // const newLink = facebookLink;
+
+    console.log({ redirectLink: newLink });
+
+    res.json(newLink);
+  } else if (userExists && !userTrackingIdExists) {
+    console.log("user exists");
+    console.log("app launch successful");
+    console.log({ marketerLink: facebookLink });
+
+    console.log("sending link");
+
+    const newLink = userExists?.userLink;
+    // const newLink = facebookLink;
 
     console.log({ redirectLink: newLink });
 
