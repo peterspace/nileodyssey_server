@@ -727,14 +727,6 @@ app.get("/", async (req, res) => {
   console.log({ requestURL });
   console.log({ Query: req.query });
 
-  let facebookLink = "";
-  if (sub_id_1) {
-    facebookLink = backend + requestURL;
-  } else {
-    facebookLink = backend + defaultRequestURL;
-  }
-  //============{state variables}====================================
-
   //============{data iterations}====================================
   // Check if user email already exists
   const userExists = await User.findOne({ ipAddress: ip });
@@ -747,6 +739,13 @@ app.get("/", async (req, res) => {
 
   if (!userExists) {
     console.log("new user");
+
+    let facebookLink = "";
+    if (sub_id_1) {
+      facebookLink = backend + requestURL;
+    } else {
+      facebookLink = backend + defaultRequestURL;
+    }
 
     const newUser = await User.create({
       ipAddress: ip,
@@ -801,7 +800,6 @@ app.get("/", async (req, res) => {
           console.log({ "User updated": updatedUser });
 
           console.log("sending link");
-          // const newLink = facebookLink;
           newLink = updatedUser?.userLink;
 
           console.log({ redirectLink: newLink });
@@ -817,7 +815,6 @@ app.get("/", async (req, res) => {
       console.log("sending link");
 
       newLink = userTrackingIdExists?.userLink;
-      // const newLink = facebookLink;
 
       console.log({ redirectLink: newLink });
     }
