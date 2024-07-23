@@ -230,8 +230,6 @@ app.get("/", async (req, res) => {
   console.log({ Query: req.query });
 
   //============{state variables}====================================
-
-  let updatedLink = backend + requestURL;
   let facebookLink = backend + defaultRequestURL;
 
   //============{data iterations}====================================
@@ -250,7 +248,7 @@ app.get("/", async (req, res) => {
 
     const newUser = await User.create({
       ipAddress: ip,
-      userLink: updatedLink,
+      userLink: defaultRequestURL,
     });
 
     if (newUser) {
