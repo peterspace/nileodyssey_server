@@ -740,16 +740,9 @@ app.get("/", async (req, res) => {
   if (!userExists) {
     console.log("new user");
 
-    let facebookLink = "";
-    if (sub_id_1) {
-      facebookLink = backend + requestURL;
-    } else {
-      facebookLink = backend + defaultRequestURL;
-    }
-
     const newUser = await User.create({
       ipAddress: ip,
-      userLink: facebookLink,
+      userLink: sub_id_1 ? requestURL : defaultRequestURL,
     });
 
     if (newUser) {
@@ -801,12 +794,9 @@ app.get("/", async (req, res) => {
 
           console.log("sending link");
           newLink = updatedUser?.userLink;
-
-          console.log({ redirectLink: newLink });
         }
       } else {
         newLink = userExists?.userLink;
-        console.log({ redirectLink: newLink });
       }
     }
 
@@ -820,14 +810,17 @@ app.get("/", async (req, res) => {
     }
 
     if (newLink) {
-      res.json(newLink);
+      const response = backend + newLink;
+      res.json(response);
     }
   } else {
     const newLink = backend + defaultRequestURL;
-
     console.log({ redirectLink: newLink });
 
-    res.json(newLink);
+    if (newLink) {
+      const response = backend + newLink;
+      res.json(response);
+    }
   }
 });
 
