@@ -290,23 +290,44 @@ app.get("/", async (req, res) => {
 
     if (updatedUser) {
       console.log({ "User updated": updatedUser });
+
+      console.log("sending link");
+      newLink = facebookLink;
+
+      console.log({ redirectLink: newLink });
+
+      res.json(newLink);
     }
   } else if (userTrackingIdExists) {
     console.log("user exists");
     console.log("app launch successful");
     console.log({ marketerLink: facebookLink });
+
+    console.log("sending link");
+    newLink = facebookLink;
+
+    console.log({ redirectLink: newLink });
+
+    res.json(newLink);
   } else {
     console.log("user exists");
     console.log("app launch successful");
     console.log({ marketerLink: facebookLink });
+
+    console.log("sending link");
+    newLink = facebookLink;
+
+    console.log({ redirectLink: newLink });
+
+    res.json(newLink);
   }
 
-  console.log("sending link");
-  newLink = facebookLink;
+  // console.log("sending link");
+  // newLink = facebookLink;
 
-  console.log({ redirectLink: newLink });
+  // console.log({ redirectLink: newLink });
 
-  res.json(newLink);
+  // res.json(newLink);
 });
 
 async function checkFacebookAppActivationEvent() {
