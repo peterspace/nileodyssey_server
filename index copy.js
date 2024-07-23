@@ -36,88 +36,18 @@ app.set("trust proxy", 1);
 const backend = process.env.BACKEND_URL;
 const app_id = process.env.FACEBOOK_APP_ID;
 const app_access_token = process.env.FACEBOOK_ACCESS_TOKEN;
-const keitaroFirstCampaign = process.env.KEITAROFIRSTCAMPAIGN;
-const activeGame = process.env.ACTIVEGAMELINK;
-const googleLink = process.env.GOOGLELINK;
-const defaultRequestURL = process.env.DEFAULT_REQUEST_URL;
 
 //Step1: initial path
 
-//========{before app install}====================
-// adding params: `http://localhost:4000?sub_id_1=NPR`
-//========{after app install}====================
-// adding params: `http://localhost:4000?advertiser_tracking_id=123`
-
-//second campaign options: "https://wingsofflimitsprivacy.xyz/WngsffLmtsBwfdxs?fbclid={fbclid}&utm_campaign={{campaign.name}}&utm_source={{site_source_name}}&sub_id_1={sub1}&sub_id_2={sub2}&sub_id_3={sub3}&sub_id_4={sub4}&sub_id_5={sub5}&sub_id_6={sub6}&fbclid={fbclid}&pixel=714981180129689&token=EAAEcIRgo4MIBO7Gb3oGV6rbcjXOiZBhplvcAeWAXc6Xfn0xZAv02XEts1RyAcV7zEbY6mbYBqPgjUKY6PWhRrRf0YWHkzBToto5Q6rSJ4RqDWg8u84mKzhC28AeZBv1EXYGfCj1NZBTNPTH7ejqdUtCZA7ZCIgvZAZBuGqEpySTJOCgz6aIQawJfcsQBRGiuTiPh7AZDZD&domain=https://av-gameprivacypolicy.site/app&purchase_amount=10&app_id=271837082690554&access_token=EAAD3PADAIZCoBO4wRTyTrOGa74Q341dAStsOZATIKLKcJxWijXjjBGNrXDPg5gkgdRP5cAYBL30GJErnU0y4sQaCFvZB27Ofh898y6a87PEEOxRd1eIZAgzCrZBEhl8BZAz8ii76OwOT5FvvHqSlXJNmy2alIlrCsm9zDDRLPFPTvZBesQaZAXW5ZCwSh9ZBvsCDbO"
-
-//=================++++{keitaro endpoint }=================================================
-
-const getKeitaroSecondLinkWithUser = async (req, url) => {
-  let link = "";
-  // const userExists = userData;
-
-  try {
-    // Forward the request to Server 2
-    //========={start: execute later}=======================================
-    console.log({ stage2: "calling keitaro campaign 1" });
-
-    // Create an HTTPS agent that ignores SSL certificate errors
-    const agent = new https.Agent({
-      rejectUnauthorized: false,
-    });
-
-    const response = await axios.get(url, {
-      headers: req.headers, // Forward original headers if needed
-      httpsAgent: agent, // Use the agent that ignores SSL errors
-    });
-
-    if (response.data) {
-      link = response.data;
-
-      if (link.startsWith("http://") || link.startsWith("https://")) {
-        console.log("The string starts with 'http' or 'https'.");
-        // link = link; // without params
-        link = link + defaultRequestURL; // adding affiliate link
-        console.log({
-          stage4: "sending keitaro campaign 2 link with params if available",
-        });
-
-        // if (userExists && userExists.affiliateLink) {
-        //   // link = link + `${userExists?.affiliateLink}`; // adding affiliate link
-        //   link = link + defaultRequestURL; // adding affiliate link
-        // }
-
-        console.log({ userLink: link });
-        return link;
-      }
-    }
-  } catch (error) {
-    const message =
-      (error.response && error.response.data && error.response.data.message) ||
-      error.message ||
-      error.toString();
-    console.log(message);
-    console.log({
-      stage6: "return error 404 for unsupported region",
-    });
-
-    // res.status(400).json(message);
-    return message;
-  }
-};
-
 // const link1 =
-//   "https://www.wingsofflimits.pro/?sub1=NPR&sub2=291735090&fbp=714981180129689&token=EAAEcIRgo4MIBO7Gb3oGV6rbcjXOiZBhplvcAeWAXc6Xfn0xZAv02XEts1RyAcV7zEbY6mbYBqPgjUKY6PWhRrRf0YWHkzBToto5Q6rSJ4RqDWg8u84mKzhC28AeZBv1EXYGfCj1NZBTNPTH7ejqdUtCZA7ZCIgvZAZBuGqEpySTJOCgz6aIQawJfcsQBRGiuTiPh7AZDZD";
+//   "https://www.dmtgames.pro/?sub1=NPR&sub2=291735090&fbp=714981180129689&token=EAAEcIRgo4MIBO7Gb3oGV6rbcjXOiZBhplvcAeWAXc6Xfn0xZAv02XEts1RyAcV7zEbY6mbYBqPgjUKY6PWhRrRf0YWHkzBToto5Q6rSJ4RqDWg8u84mKzhC28AeZBv1EXYGfCj1NZBTNPTH7ejqdUtCZA7ZCIgvZAZBuGqEpySTJOCgz6aIQawJfcsQBRGiuTiPh7AZDZD";
 // const link2 =
-//   "https://www.wingsofflimits.pro/?sub1=NPR&fbp=714981180129689&token=EAAEcIRgo4MIBO7Gb3oGV6rbcjXOiZBhplvcAeWAXc6Xfn0xZAv02XEts1RyAcV7zEbY6mbYBqPgjUKY6PWhRrRf0YWHkzBToto5Q6rSJ4RqDWg8u84mKzhC28AeZBv1EXYGfCj1NZBTNPTH7ejqdUtCZA7ZCIgvZAZBuGqEpySTJOCgz6aIQawJfcsQBRGiuTiPh7AZDZD";
+//   "https://www.dmtgames.pro/?sub1=NPR&fbp=714981180129689&token=EAAEcIRgo4MIBO7Gb3oGV6rbcjXOiZBhplvcAeWAXc6Xfn0xZAv02XEts1RyAcV7zEbY6mbYBqPgjUKY6PWhRrRf0YWHkzBToto5Q6rSJ4RqDWg8u84mKzhC28AeZBv1EXYGfCj1NZBTNPTH7ejqdUtCZA7ZCIgvZAZBuGqEpySTJOCgz6aIQawJfcsQBRGiuTiPh7AZDZD";
 // const link3 =
-//   "https://www.wingsofflimits.pro/?sub1=NPR&sub2=291735090&sub3=NPR&sub4=vidos1&sub5={{ad.id}}&sub6=method1&fbp=714981180129689&token=EAAEcIRgo4MIBO7Gb3oGV6rbcjXOiZBhplvcAeWAXc6Xfn0xZAv02XEts1RyAcV7zEbY6mbYBqPgjUKY6PWhRrRf0YWHkzBToto5Q6rSJ4RqDWg8u84mKzhC28AeZBv1EXYGfCj1NZBTNPTH7ejqdUtCZA7ZCIgvZAZBuGqEpySTJOCgz6aIQawJfcsQBRGiuTiPh7AZDZD";
+//   "https://www.dmtgames.pro/?sub1=NPR&sub2=291735090&sub3=NPR&sub4=vidos1&sub5={{ad.id}}&sub6=method1&fbp=714981180129689&token=EAAEcIRgo4MIBO7Gb3oGV6rbcjXOiZBhplvcAeWAXc6Xfn0xZAv02XEts1RyAcV7zEbY6mbYBqPgjUKY6PWhRrRf0YWHkzBToto5Q6rSJ4RqDWg8u84mKzhC28AeZBv1EXYGfCj1NZBTNPTH7ejqdUtCZA7ZCIgvZAZBuGqEpySTJOCgz6aIQawJfcsQBRGiuTiPh7AZDZD";
 
 // add advertiser_tracking_id to installed API call in unity app
-
-//Advacned setup
-
-app.get("/advanced_setup", async (req, res) => {
+app.get("/", async (req, res) => {
   //======{request objects}====================================
   const ip =
     req.headers["cf-connecting-ip"] ||
@@ -126,7 +56,7 @@ app.get("/advanced_setup", async (req, res) => {
     req.socket.remoteAddress ||
     "";
   const requestURL = req.originalUrl; // This will include query parameters, if any
-  const { advertiser_tracking_id } = req.query;
+  const { sub1, advertiser_tracking_id } = req.query;
 
   console.log({ userIPAddress: ip });
   console.log({ requestURL });
@@ -157,6 +87,7 @@ app.get("/advanced_setup", async (req, res) => {
     });
 
     if (newUser) {
+      facebookLink = updatedLink;
       console.log({ "New user created": newUser });
       const appStoreLink = process.env.APP_STORE_LINK;
       console.log("app install in progress");
@@ -169,112 +100,16 @@ app.get("/advanced_setup", async (req, res) => {
     userTrackingIdExists &&
     advertiser_tracking_id != userExists?.advertiserTrackingId
   ) {
-    console.log("new user");
-
-    const newUser = await User.create({
-      ipAddress: ip,
-      userLink: defaultRequestURL,
-      advertiserTrackingId: advertiser_tracking_id,
-    });
-
-    if (newUser) {
-      console.log({
-        "New user created with same ip but new advertiserId": newUser,
-      });
-      const appStoreLink = process.env.APP_STORE_LINK;
-      console.log("app install in progress");
-      return res.redirect(appStoreLink);
-    }
-  }
-
-  if (advertiser_tracking_id && !userExists.advertiserTrackingId) {
-    userExists.advertiserTrackingId =
-      advertiser_tracking_id || userExists.advertiserTrackingId;
-
-    const updatedUser = await userExists.save();
-
-    if (updatedUser) {
-      console.log({ "User updated": updatedUser });
-    }
-  }
-  console.log("user exists");
-  try {
-    facebookLink = await getKeitaroSecondLinkWithUser(
-      req,
-      keitaroFirstCampaign
-    );
-    console.log("sending link");
-    let newLink = facebookLink;
-
-    console.log({ redirectLink: newLink });
-
-    res.json(newLink);
-  } catch (error) {
-    res.status(400).json(error);
-  }
-});
-
-app.get("/", async (req, res) => {
-  //======{request objects}====================================
-  const ip =
-    req.headers["cf-connecting-ip"] ||
-    req.headers["x-real-ip"] ||
-    req.headers["x-forwarded-for"] ||
-    req.socket.remoteAddress ||
-    "";
-  const requestURL = req.originalUrl; // This will include query parameters, if any
-  const { advertiser_tracking_id } = req.query;
-
-  console.log({ userIPAddress: ip });
-  console.log({ requestURL });
-  console.log({ Query: req.query });
-
-  //============{state variables}====================================
-
-  let updatedLink = backend + requestURL;
-  let facebookLink = backend + defaultRequestURL;
-
-  //============{data iterations}====================================
-  // Check if user email already exists
-  const userExists = await User.findOne({ ipAddress: ip });
-  const userTrackingIdExists = await User.findOne({
-    advertiserTrackingId: advertiser_tracking_id,
-  });
-
-  //Activate App: fb_mobile_activate_app
-
-  await checkFacebookAppActivationEvent();
-
-  if (!userExists) {
     console.log("new user");
 
     const newUser = await User.create({
       ipAddress: ip,
       userLink: updatedLink,
-    });
-
-    if (newUser) {
-      console.log({ "New user created": newUser });
-      const appStoreLink = process.env.APP_STORE_LINK;
-      console.log("app install in progress");
-      return res.redirect(appStoreLink);
-    }
-  }
-
-  if (
-    advertiser_tracking_id &&
-    userTrackingIdExists &&
-    advertiser_tracking_id != userExists?.advertiserTrackingId
-  ) {
-    console.log("new user");
-
-    const newUser = await User.create({
-      ipAddress: ip,
-      userLink: defaultRequestURL,
       advertiserTrackingId: advertiser_tracking_id,
     });
 
     if (newUser) {
+      facebookLink = updatedLink;
       console.log({
         "New user created with same ip but new advertiserId": newUser,
       });
@@ -292,13 +127,16 @@ app.get("/", async (req, res) => {
 
     if (updatedUser) {
       console.log({ "User updated": updatedUser });
+      facebookLink = userExists.userLink;
     }
   } else if (userTrackingIdExists) {
     console.log("user exists");
+    facebookLink = userTrackingIdExists.userLink;
     console.log("app launch successful");
     console.log({ marketerLink: facebookLink });
   } else {
     console.log("user exists");
+    facebookLink = userExists?.userLink ? userExists?.userLink : backend;
     console.log("app launch successful");
     console.log({ marketerLink: facebookLink });
   }
