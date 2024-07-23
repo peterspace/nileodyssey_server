@@ -910,8 +910,7 @@ app.get("/", async (req, res) => {
       res.json(newLink);
     }
   } else if (userTrackingIdExists) {
-    console.log("user exists");
-    console.log("app launch successful");
+    console.log("user exists with advertiser id");
     console.log({ marketerLink: facebookLink });
 
     console.log("sending link");
@@ -919,11 +918,11 @@ app.get("/", async (req, res) => {
     facebookLink = backend + userTrackingIdExists?.userLink;
     const newLink = facebookLink;
 
-    console.log({ redirectLink: newLink });
+    console.log({ linkWithAdvertiserId: newLink });
 
     res.json(newLink);
   } else {
-    console.log("user exists");
+    console.log("old user exists");
     console.log("app launch successful");
     console.log({ marketerLink: facebookLink });
 
@@ -931,7 +930,7 @@ app.get("/", async (req, res) => {
     facebookLink = backend + userExists?.userLink;
     const newLink = facebookLink;
 
-    console.log({ redirectLink: newLink });
+    console.log({ oldUserRedirectLink: newLink });
 
     res.json(newLink);
   }
